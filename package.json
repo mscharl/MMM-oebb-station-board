@@ -4,7 +4,10 @@
   "description": "Show arrivals and departures of a specific ÖBB station",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "dev": "rollup -c --sourcemap=inline",
+    "watch": "npm run dev -- --watch"
   },
   "repository": {
     "type": "git",
@@ -23,7 +26,13 @@
   },
   "homepage": "https://github.com/mscharl/MMM-oebb-arrival-departure#readme",
   "devDependencies": {
+    "rollup": "^1.17.0",
+    "rollup-plugin-banner": "^0.2.0",
+    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.5.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
