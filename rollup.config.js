@@ -1,7 +1,8 @@
 import banner from 'rollup-plugin-banner';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
+import pkg from './package.json';
 
 const bannerText = [
     'ÖBB Station Arrivals & Departures',
@@ -28,7 +29,18 @@ export default [
             file: './MMM-oebb-arrival-departure.js',
             format: 'iife',
         },
-    }/*, {
+    }, {
+        input: './src/station_finder.ts',
+        plugins: [
+            typescript(),
+            banner(bannerText),
+        ],
+        output: {
+            file: './station_finder.js',
+            format: 'umd',
+        },
+        external: Object.keys(pkg.dependencies)
+    },/*, {
         input: './src/node_helper.ts',
         plugins: [
             typescript(),

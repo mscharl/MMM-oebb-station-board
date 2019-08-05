@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
     "dev": "rollup -c --sourcemap=inline",
-    "watch": "npm run dev -- --watch"
+    "watch": "npm run dev -- --watch",
+    "stationFinder": "node station_finder.js"
   },
   "repository": {
     "type": "git",
@@ -26,13 +27,18 @@
   },
   "homepage": "https://github.com/mscharl/MMM-oebb-arrival-departure#readme",
   "devDependencies": {
+    "@types/prompts": "^2.0.1",
     "rollup": "^1.17.0",
     "rollup-plugin-banner": "^0.2.0",
     "rollup-plugin-commonjs": "^10.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-typescript2": "^0.22.1",
     "tslib": "^1.10.0",
     "typescript": "^3.5.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "oebb-api": "github:mscharl/oebb-api#patch-1",
+    "prompts": "^2.1.0"
+  }
 }
