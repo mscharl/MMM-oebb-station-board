@@ -40,7 +40,7 @@ export default [
             format: 'umd',
         },
         external: Object.keys(pkg.dependencies)
-    },/*, {
+    }, {
         input: './src/node_helper.ts',
         plugins: [
             typescript(),
@@ -50,5 +50,6 @@ export default [
             file: './node_helper.js',
             format: 'umd',
         },
-    },*/
+        external: Object.keys(pkg.dependencies)
+    },
 ]
