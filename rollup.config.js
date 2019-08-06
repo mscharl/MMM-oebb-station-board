@@ -18,7 +18,7 @@ const bannerText = [
 
 export default [
     {
-        input: './src/MMM-oebb-arrival-departure.ts',
+        input: './src/MMM-oebb-station-board.ts',
         plugins: [
             typescript(),
             resolve(),
@@ -26,7 +26,7 @@ export default [
             banner(bannerText),
         ],
         output: {
-            file: './MMM-oebb-arrival-departure.js',
+            file: './MMM-oebb-station-board.js',
             format: 'iife',
         },
     }, {

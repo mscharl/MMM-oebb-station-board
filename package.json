@@ -1,5 +1,5 @@
 {
-  "name": "mmm-oebb-arrival-departure",
+  "name": "mMM-oebb-station-board",
   "version": "0.0.0",
   "description": "Show arrivals and departures of a specific ÖBB station",
   "main": "index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mscharl/MMM-oebb-arrival-departure.git"
+    "url": "git+https://github.com/mscharl/MMM-oebb-station-board.git"
   },
   "keywords": [
     "MagicMirror",
@@ -23,9 +23,9 @@
   "author": "Michael Scharl <michael.scharl@me.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mscharl/MMM-oebb-arrival-departure/issues"
+    "url": "https://github.com/mscharl/MMM-oebb-station-board/issues"
   },
-  "homepage": "https://github.com/mscharl/MMM-oebb-arrival-departure#readme",
+  "homepage": "https://github.com/mscharl/MMM-oebb-station-board#readme",
   "devDependencies": {
     "@types/prompts": "^2.0.1",
     "rollup": "^1.17.0",

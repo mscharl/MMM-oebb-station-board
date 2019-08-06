@@ -10,7 +10,7 @@ interface State {
 
 const DOM_INSTANCES: { [key: string]: DomTree } = {};
 
-Module.register<Config>('MMM-oebb-arrival-departure', {
+Module.register<Config>('MMM-oebb-station-board', {
     /**
      * Define the default instance config
      */
