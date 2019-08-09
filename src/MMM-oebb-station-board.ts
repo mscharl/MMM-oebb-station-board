@@ -1,12 +1,8 @@
 import { GET_STATION_DATA, RECEIVED_STATION_DATA } from './constants/ModuleNotifications';
+import store from './services/Store';
 import Config from './types/Config';
 import DomTree, { RowTemplate } from './types/DomTree';
 import StationData from './types/StationData';
-
-interface State {
-    loading: boolean;
-    data?: StationData;
-}
 
 const DOM_INSTANCES: { [key: string]: DomTree } = {};
 
@@ -14,56 +10,59 @@ Module.register<Config>('MMM-oebb-station-board', {
     /**
      * Define the default instance config
      */
-    defaults: {},
+    defaults: {
+        boardType: 'dep',
+        maxConnections: 8,
+    },
 
     start() {
-        this.loading = true;
-        this.stationData = null;
-
-        this.sendSocketNotification(GET_STATION_DATA, this.config.stationNumber);
+        store.onUpdate(() => this.renderDom());
+        this._fetchStationData();
     },
 
     /**
      * Core-Function to return the modules DOM-Tree.
      */
     getDom(): HTMLElement {
+        this.renderDom();
+        return this._getDomInstance().root;
+    },
+
+    renderDom() {
         const { root, header, table, createRow } = this._getDomInstance() as DomTree;
-        const data = this.stationData as StationData;
-        console.log(data);
+        const data = store.stationData;
 
-        table.innerHTML = '';
-
-        if (this.loading) {
+        if (store.loading) {
             header.innerText = 'Loading station data …';
         } else if (!data) {
             header.innerText = 'No data available!';
+            table.innerHTML = '';
         } else {
             header.innerText = data.stationName;
+            table.innerHTML = '';
             table.append(...data.journey.map((train) => {
-                const {row, time, timeCorrection, id, destination, platform} = createRow();
+                const { row, time, timeCorrection, id, destination, platform } = createRow();
 
                 time.innerText = train.ti;
                 id.innerText = train.pr;
                 destination.innerText = train.lastStop;
                 platform.innerText = train.tr;
 
-                if(train.rt) {
+                if (train.rt) {
                     timeCorrection.innerText = train.rt.dlt;
                 }
 
                 return row;
             }))
         }
-
-        return root;
     },
 
     socketNotificationReceived(notification: string, payload: any) {
         switch (notification) {
             case RECEIVED_STATION_DATA:
-                this.stationData = payload as StationData;
-                this.loading = false;
-                this.updateDom();
+                store.stationData = payload as StationData;
+                store.loading = false;
+                this._setupRefreshTimeout();
                 break;
         }
     },
@@ -108,5 +107,39 @@ Module.register<Config>('MMM-oebb-station-board', {
         }
 
         return DOM_INSTANCES[identifier];
+    },
+
+    _fetchStationData() {
+        store.loading = true;
+        this.sendSocketNotification(GET_STATION_DATA, this.config);
+    },
+
+    _setupRefreshTimeout() {
+        let timeout = 15 * 60 * 1000;
+
+        if (store.stationData) {
+            const nextJourneyDate = store.stationData.journey.reduce((nextTime: null | Date, journey) => {
+                const [hours, minutes] = journey.ti.split(':');
+                const [day, month, year] = journey.da.split('.');
+                const date = new Date(`${year}-${month}-${day} ${hours}:${minutes}:00`);
+
+                if (!nextTime) {
+                    return date;
+                } else if (nextTime < date) {
+                    return nextTime;
+                }
+
+                return date;
+            }, null);
+
+            if (nextJourneyDate) {
+                const diff = Math.abs(+nextJourneyDate - +new Date());
+                timeout = timeout < diff ? timeout : diff;
+            }
+        }
+
+        setTimeout(() => {
+            this._fetchStationData();
+        }, timeout);
     },
 });
