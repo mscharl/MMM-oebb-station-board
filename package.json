@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/mscharl/MMM-oebb-station-board#readme",
   "devDependencies": {
+    "@types/debounce": "^1.2.0",
     "@types/prompts": "^2.0.1",
     "rollup": "^1.17.0",
     "rollup-plugin-banner": "^0.2.0",
@@ -38,6 +39,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "debounce": "^1.2.0",
     "oebb-api": "github:mscharl/oebb-api#patch-1",
     "prompts": "^2.1.0"
   }
