@@ -230,7 +230,7 @@
                   return date;
               }, null);
               if (nextJourneyDate) {
-                  var diff = Math.abs(+nextJourneyDate - +new Date());
+                  var diff = Math.abs(+nextJourneyDate - +new Date()) + 30000; // Adding 30secs delay to avoid getting outdated data.
                   timeout = timeout < diff ? timeout : diff;
               }
           }

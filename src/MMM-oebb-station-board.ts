@@ -133,7 +133,7 @@ Module.register<Config>('MMM-oebb-station-board', {
             }, null);
 
             if (nextJourneyDate) {
-                const diff = Math.abs(+nextJourneyDate - +new Date());
+                const diff = Math.abs(+nextJourneyDate - +new Date()) + 30000; // Adding 30secs delay to avoid getting outdated data.
                 timeout = timeout < diff ? timeout : diff;
             }
         }
