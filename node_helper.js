@@ -12,8 +12,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('oebb-api')) :
     typeof define === 'function' && define.amd ? define(['oebb-api'], factory) :
-    (global = global || self, factory(global.oebb));
-}(this, function (oebb) { 'use strict';
+    (global = global || self, factory(global.oebbApi));
+}(this, function (oebbApi) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -49,17 +49,18 @@
         socketNotificationReceived: function (notification, payload) {
             switch (notification) {
                 case GET_STATION_DATA:
-                    this._fetchStationData(payload);
+                    var _a = payload, boardType = _a.boardType, direction = _a.direction, maxConnections = _a.maxConnections, stationNumber = _a.stationNumber;
+                    this._fetchStationData(stationNumber, boardType, maxConnections, direction);
             }
         },
-        _fetchStationData: function (stationNumber) {
+        _fetchStationData: function (stationNumber, boardType, maxConnections, direction) {
             var _this = this;
-            var options = __assign({}, oebb.getStationBoardDataOptions(), { evaId: stationNumber });
-            oebb.getStationBoardData(options)
+            var options = __assign({}, oebbApi.getStationBoardDataOptions(), (direction ? { dirInput: direction } : {}), { evaId: stationNumber, boardType: boardType, maxJourneys: maxConnections });
+            oebbApi.getStationBoardData(options)
                 .then(function (stationResponse) {
                 _this.sendSocketNotification(RECEIVED_STATION_DATA, stationResponse);
             });
-        }
+        },
     });
 
 }));
