@@ -126,7 +126,7 @@
        */
       defaults: {
           boardType: 'dep',
-          maxConnections: 8,
+          maxConnections: 4,
       },
       start: function () {
           var _this = this;
@@ -141,7 +141,7 @@
           return this._getDomInstance().root;
       },
       renderDom: function () {
-          var _a = this._getDomInstance(), root = _a.root, header = _a.header, table = _a.table, createRow = _a.createRow;
+          var _a = this._getDomInstance(), root = _a.root, header = _a.header, table = _a.table, createRow = _a.createRow, spaceRow = _a.spaceRow;
           var data = store.stationData;
           if (store.loading) {
               header.innerText = 'Loading station data …';
@@ -154,16 +154,20 @@
               header.innerText = data.stationName;
               table.innerHTML = '';
               table.append.apply(table, data.journey.map(function (train) {
-                  var _a = createRow(), row = _a.row, time = _a.time, timeCorrection = _a.timeCorrection, id = _a.id, destination = _a.destination, platform = _a.platform;
-                  time.innerText = train.ti;
+                  var _a = createRow(), row = _a.row, currentTime = _a.currentTime, plannedTime = _a.plannedTime, id = _a.id, destination = _a.destination, platform = _a.platform;
+                  currentTime.innerText = train.ti;
                   id.innerText = train.pr;
                   destination.innerText = train.lastStop;
                   platform.innerText = train.tr;
                   if (train.rt) {
-                      timeCorrection.innerText = train.rt.dlt;
+                      currentTime.innerText = train.rt.dlt;
+                      currentTime.style.color = 'red';
+                      plannedTime.innerText = train.ti;
                   }
                   return row;
-              }));
+              }).reduce(function (rows, row, index) { return rows.concat((index === 0 ? [] : [spaceRow()]), [
+                  row,
+              ]); }, []));
           }
       },
       socketNotificationReceived: function (notification, payload) {
@@ -182,18 +186,50 @@
               var root = document.createElement('div');
               var header = document.createElement('header');
               var table = document.createElement('table');
+              table.classList.add('align-left');
+              var spaceRow = function () {
+                  var row = document.createElement('tr');
+                  var col = document.createElement('td');
+                  var hr = document.createElement('hr');
+                  col.colSpan = 3;
+                  hr.classList.add('dimmed');
+                  hr.style.borderWidth = '0 0 1px 0';
+                  hr.style.borderStyle = 'solid';
+                  hr.style.borderColor = 'currentColor';
+                  hr.style.margin = '.1875em 0';
+                  row.append(col);
+                  col.append(hr);
+                  return row;
+              };
               var createRow = function () {
                   var row = document.createElement('tr');
                   var time = document.createElement('td');
-                  var timeCorrection = document.createElement('td');
-                  var id = document.createElement('td');
-                  var destination = document.createElement('td');
+                  var currentTime = document.createElement('div');
+                  var plannedTime = document.createElement('div');
+                  var trainInfo = document.createElement('td');
+                  var id = document.createElement('div');
+                  var destination = document.createElement('div');
                   var platform = document.createElement('td');
-                  row.append(time, timeCorrection, id, destination, platform);
+                  currentTime.classList.add('medium');
+                  currentTime.classList.add('bright');
+                  currentTime.classList.add('light');
+                  plannedTime.classList.add('xsmall');
+                  time.style.paddingRight = '.375em';
+                  time.style.verticalAlign = 'bottom';
+                  time.append(currentTime, plannedTime);
+                  id.classList.add('small');
+                  id.classList.add('light');
+                  destination.classList.add('small');
+                  destination.classList.add('bright');
+                  platform.classList.add('small');
+                  platform.classList.add('align-right');
+                  platform.style.paddingLeft = '.625em';
+                  row.append(time, trainInfo, platform);
+                  trainInfo.append(id, destination);
                   return {
                       row: row,
-                      time: time,
-                      timeCorrection: timeCorrection,
+                      currentTime: currentTime,
+                      plannedTime: plannedTime,
                       id: id,
                       destination: destination,
                       platform: platform,
@@ -205,6 +241,7 @@
                   header: header,
                   table: table,
                   createRow: createRow,
+                  spaceRow: spaceRow,
               };
           }
           return DOM_INSTANCES[identifier];

@@ -12,7 +12,7 @@ Module.register<Config>('MMM-oebb-station-board', {
      */
     defaults: {
         boardType: 'dep',
-        maxConnections: 8,
+        maxConnections: 4,
     },
 
     start() {
@@ -29,7 +29,7 @@ Module.register<Config>('MMM-oebb-station-board', {
     },
 
     renderDom() {
-        const { root, header, table, createRow } = this._getDomInstance() as DomTree;
+        const { root, header, table, createRow, spaceRow } = this._getDomInstance() as DomTree;
         const data = store.stationData;
 
         if (store.loading) {
@@ -41,19 +41,25 @@ Module.register<Config>('MMM-oebb-station-board', {
             header.innerText = data.stationName;
             table.innerHTML = '';
             table.append(...data.journey.map((train) => {
-                const { row, time, timeCorrection, id, destination, platform } = createRow();
+                const { row, currentTime, plannedTime, id, destination, platform } = createRow();
 
-                time.innerText = train.ti;
+                currentTime.innerText = train.ti;
                 id.innerText = train.pr;
                 destination.innerText = train.lastStop;
                 platform.innerText = train.tr;
 
                 if (train.rt) {
-                    timeCorrection.innerText = train.rt.dlt;
+                    currentTime.innerText = train.rt.dlt;
+                    currentTime.style.color = 'red';
+                    plannedTime.innerText = train.ti;
                 }
 
                 return row;
-            }))
+            }).reduce((rows, row, index) => [
+                ...rows,
+                ...(index === 0 ? [] : [spaceRow()]),
+                row,
+            ], [] as HTMLElement[]))
         }
     },
 
@@ -76,20 +82,60 @@ Module.register<Config>('MMM-oebb-station-board', {
             const header = document.createElement<'header'>('header');
             const table = document.createElement<'table'>('table');
 
+            table.classList.add('align-left');
+
+            const spaceRow = (): HTMLElement => {
+                const row = document.createElement<'tr'>('tr');
+                const col = document.createElement<'td'>('td');
+                const hr = document.createElement<'hr'>('hr');
+
+                col.colSpan = 3;
+                hr.classList.add('dimmed');
+                hr.style.borderWidth = '0 0 1px 0';
+                hr.style.borderStyle = 'solid';
+                hr.style.borderColor = 'currentColor';
+                hr.style.margin = '.1875em 0';
+
+                row.append(col);
+                col.append(hr);
+
+                return row;
+            };
             const createRow = (): RowTemplate => {
                 const row = document.createElement<'tr'>('tr');
                 const time = document.createElement<'td'>('td');
-                const timeCorrection = document.createElement<'td'>('td');
-                const id = document.createElement<'td'>('td');
-                const destination = document.createElement<'td'>('td');
+                const currentTime = document.createElement<'div'>('div');
+                const plannedTime = document.createElement<'div'>('div');
+                const trainInfo = document.createElement<'td'>('td');
+                const id = document.createElement<'div'>('div');
+                const destination = document.createElement<'div'>('div');
                 const platform = document.createElement<'td'>('td');
 
-                row.append(time, timeCorrection, id, destination, platform);
+                currentTime.classList.add('medium');
+                currentTime.classList.add('bright');
+                currentTime.classList.add('light');
+
+                plannedTime.classList.add('xsmall');
+
+                time.style.paddingRight = '.375em';
+                time.style.verticalAlign = 'bottom';
+                time.append(currentTime, plannedTime);
+
+                id.classList.add('small');
+                id.classList.add('light');
+                destination.classList.add('small');
+                destination.classList.add('bright');
+                platform.classList.add('small');
+                platform.classList.add('align-right');
+                platform.style.paddingLeft = '.625em';
+
+                row.append(time, trainInfo, platform);
+                trainInfo.append(id, destination);
 
                 return {
                     row,
-                    time,
-                    timeCorrection,
+                    currentTime,
+                    plannedTime,
                     id,
                     destination,
                     platform,
@@ -103,6 +149,7 @@ Module.register<Config>('MMM-oebb-station-board', {
                 header,
                 table,
                 createRow,
+                spaceRow,
             };
         }
 

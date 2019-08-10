@@ -3,13 +3,14 @@ export default interface DomTree {
     header: HTMLElement,
     table: HTMLTableElement,
     createRow: () => RowTemplate,
+    spaceRow: () => HTMLElement,
 }
 
 export interface RowTemplate {
     row: HTMLTableRowElement,
-    time: HTMLTableDataCellElement,
-    timeCorrection: HTMLTableDataCellElement,
-    id: HTMLTableDataCellElement,
-    destination: HTMLTableDataCellElement,
-    platform: HTMLTableDataCellElement,
+    currentTime: HTMLElement,
+    plannedTime: HTMLElement,
+    id: HTMLElement,
+    destination: HTMLElement,
+    platform: HTMLElement,
 }
