@@ -1,6 +1,6 @@
 {
-  "name": "mMM-oebb-station-board",
-  "version": "0.0.0",
+  "name": "mmm-oebb-station-board",
+  "version": "1.0.0",
   "description": "Show arrivals and departures of a specific ÖBB station",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,8 @@
     "MagicMirror",
     "MagicMirror2",
     "Module",
-    "OEBB"
+    "OEBB",
+    "ÖBB"
   ],
   "author": "Michael Scharl <michael.scharl@me.com>",
   "license": "MIT",
