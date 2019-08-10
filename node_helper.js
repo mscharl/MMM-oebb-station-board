@@ -49,17 +49,37 @@
         socketNotificationReceived: function (notification, payload) {
             switch (notification) {
                 case GET_STATION_DATA:
-                    var _a = payload, boardType = _a.boardType, direction = _a.direction, maxConnections = _a.maxConnections, stationNumber = _a.stationNumber;
-                    this._fetchStationData(stationNumber, boardType, maxConnections, direction);
+                    this._fetchStationData(payload);
             }
         },
-        _fetchStationData: function (stationNumber, boardType, maxConnections, direction) {
+        _fetchStationData: function (config) {
             var _this = this;
-            var options = __assign({}, oebbApi.getStationBoardDataOptions(), (direction ? { dirInput: direction } : {}), { evaId: stationNumber, boardType: boardType, maxJourneys: maxConnections });
+            var boardType = config.boardType, direction = config.direction, maxConnections = config.maxConnections, stationNumber = config.stationNumber, connectionTypes = config.connectionTypes;
+            var options = __assign({}, oebbApi.getStationBoardDataOptions(), (direction ? { dirInput: direction } : {}), (connectionTypes ? { productsFilter: this._createConnectionTypeFilter(connectionTypes) } : {}), { evaId: stationNumber, boardType: boardType, maxJourneys: maxConnections });
             oebbApi.getStationBoardData(options)
                 .then(function (stationResponse) {
                 _this.sendSocketNotification(RECEIVED_STATION_DATA, stationResponse);
             });
+        },
+        _createConnectionTypeFilter: function (types) {
+            return [
+                types.Railjet,
+                false,
+                types.ECandICE,
+                types.DandEuronightAndNightjet,
+                types.Regional,
+                types.SBahn,
+                types.Bus,
+                false,
+                types.Subway,
+                types.Tram,
+                false,
+                types.AST,
+                types.Westbahn,
+                false,
+                false,
+                false,
+            ].map(function (flag) { return flag ? '1' : '0'; }).join('');
         },
     });
 
