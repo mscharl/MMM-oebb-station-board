@@ -22,6 +22,33 @@ Show arrivals and departures of a specific ÖBB station
 | `maxConnections`    | The maximum number of connections to show. Default is `4`.|
 | `connectionTypes`   | Filter the shown transportation types. See [Connection Types](#connection-types) for more. Shows all connections by default. |
 
+### Example
+```js
+{
+    modules: [
+        {
+            module: 'MMM-oebb-station-board',
+            position: 'top_right',
+            config: {
+                stationNumber: 1130401,
+                direction: 1290401,
+                connectionTypes: {
+                    Railjet: true,
+                    ECandICE: true,
+                    DandEuronightAndNightjet: true,
+                    Regional: true,
+                    SBahn: true,
+                    Bus: true,
+                    Subway: true,
+                    Tram: true,
+                    Westbahn: true,
+                    AST: true,
+                },
+            },
+        },
+    ],
+}
+```
 
 ### Get a station ID
 To load data for you desired station you first need the ID of the station. The module includes a little helper to get this ID.
