@@ -1,7 +1,7 @@
 {
   "name": "mmm-oebb-station-board",
   "version": "1.0.0",
-  "description": "Show arrivals and departures of a specific ÖBB station",
+  "description": "A MagicMirror² module to show arrivals and departures of a specific ÖBB station.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,8 +16,8 @@
   },
   "keywords": [
     "MagicMirror",
-    "MagicMirror2",
-    "Module",
+    "Public Transport",
+    "module",
     "OEBB",
     "ÖBB"
   ],
